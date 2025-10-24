@@ -1,0 +1,51 @@
+.morph-button {
+  height: 48px !important;
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  margin: auto;
+}
+
+.morph-button.loading {
+  width: 48px !important;
+  height: 48px !important;
+  border-radius: 50% !important;
+  padding: 0 !important;
+  color: #e6e1c2;
+  display: flex;
+  background-color: #7e1c13;
+  margin: 0 auto;
+}
+
+.morph-button.success {
+  width: 48px !important;
+  height: 48px !important;
+  border-radius: 50% !important;
+  display: flex;
+  margin: auto !important;
+  background: #6d9788;
+}
+
+.morph-button.error {
+  width: 48px !important;
+  height: 48px !important;
+  border-radius: 20% !important;
+  background-color: #7e1c13;
+  display: flex;
+  margin: auto;
+  color: #e6e1c2;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spinning {
+  animation: spin 1s linear infinite;
+}
