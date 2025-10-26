@@ -3,6 +3,7 @@ import { Form, Input, Button, Card, message } from "antd";
 import {
   UserOutlined,
   LockOutlined,
+  MailOutlined,
   LoadingOutlined,
   CheckOutlined,
   CloseOutlined,
@@ -12,11 +13,11 @@ import api from "../../service/api";
 import ParticleBackground from "../../components/ParticleBackground";
 import logo from "../../assets/logo.png";
 import { useCardTilt } from "../../hooks/useCardTilt";
-import styles from "./Login.module.css";
+import styles from "./Register.module.css";
 
 type ButtonState = "idle" | "loading" | "success" | "error";
 
-function Login() {
+function Register() {
   const navigate = useNavigate();
   const [buttonState, setButtonState] = useState<ButtonState>("idle");
 
@@ -28,7 +29,7 @@ function Login() {
     ) : buttonState === "error" ? (
       <CloseOutlined />
     ) : (
-      "Entrar"
+      "Registrar"
     );
 
   const getButtonType = () => (buttonState === "error" ? "danger" : "primary");
@@ -36,12 +37,16 @@ function Login() {
   const delay = (ms: number) =>
     new Promise((resolve) => setTimeout(resolve, ms));
 
-  const onFinish = async (values: { email: string; password: string }) => {
+  const onFinish = async (values: {
+    name: string;
+    email: string;
+    password: string;
+  }) => {
     setButtonState("loading");
 
     try {
       const [response] = await Promise.all([
-        api.post("/auth/login", values),
+        api.post("/auth/register", values),
         delay(1500),
       ]);
 
@@ -49,7 +54,7 @@ function Login() {
       localStorage.setItem("user", JSON.stringify(response.data.user));
 
       setButtonState("success");
-      message.success("Login realizado com sucesso!");
+      message.success("Registro realizado com sucesso!");
 
       setTimeout(() => {
         navigate("/dashboard");
@@ -57,7 +62,7 @@ function Login() {
     } catch (error: any) {
       setButtonState("error");
 
-      message.error(error.response?.data?.message || "Erro ao fazer login");
+      message.error(error.response?.data?.message || "Erro ao fazer registro");
       setTimeout(() => {
         setButtonState("idle");
       }, 2000);
@@ -81,6 +86,16 @@ function Login() {
         <ParticleBackground className={styles.particles} />
         <Form onFinish={onFinish} layout="vertical">
           <Form.Item
+            label="Nome"
+            name="name"
+            rules={[
+              { required: true, message: "Por favor, insira seu nome!" },
+            ]}
+          >
+            <Input prefix={<UserOutlined />} placeholder="Seu nome" />
+          </Form.Item>
+
+          <Form.Item
             label="Email"
             name="email"
             rules={[
@@ -88,7 +103,7 @@ function Login() {
               { type: "email", message: "Email inválido!" },
             ]}
           >
-            <Input prefix={<UserOutlined />} placeholder="seu@email.com" />
+            <Input prefix={<MailOutlined />} placeholder="seu@email.com" />
           </Form.Item>
 
           <Form.Item
@@ -96,9 +111,37 @@ function Login() {
             name="password"
             rules={[
               { required: true, message: "Por favor, insira sua senha!" },
+              { min: 6, message: "A senha deve ter no mínimo 6 caracteres!" },
             ]}
           >
             <Input.Password prefix={<LockOutlined />} placeholder="Senha" />
+          </Form.Item>
+
+          <Form.Item
+            label="Confirmar Senha"
+            name="confirmPassword"
+            dependencies={["password"]}
+            rules={[
+              {
+                required: true,
+                message: "Por favor, confirme sua senha!",
+              },
+              ({ getFieldValue }) => ({
+                validator(_, value) {
+                  if (!value || getFieldValue("password") === value) {
+                    return Promise.resolve();
+                  }
+                  return Promise.reject(
+                    new Error("As senhas não coincidem!")
+                  );
+                },
+              }),
+            ]}
+          >
+            <Input.Password
+              prefix={<LockOutlined />}
+              placeholder="Confirme sua senha"
+            />
           </Form.Item>
 
           <Form.Item>
@@ -116,16 +159,16 @@ function Login() {
           </Form.Item>
 
           <div className={styles.registerLink}>
-            Não tem conta? <Link to="/register">Cadastre-se</Link>
+            Já tem conta? <Link to="/login">Faça login</Link>
           </div>
         </Form>
       </Card>
 
       <p className={styles.callToAction}>
-        Acompanhe suas cryptos em um só lugar!
+        Junte-se a nós e comece a acompanhar suas cryptos!
       </p>
     </div>
   );
 }
 
-export default Login;
+export default Register;

@@ -1,7 +1,5 @@
 .canvas {
   position: absolute;
-  top: -90%;
-  left: -75%;
   pointer-events: none;
   z-index: 0;
 }

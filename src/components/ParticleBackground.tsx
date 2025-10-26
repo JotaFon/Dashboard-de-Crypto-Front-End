@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, CSSProperties } from "react";
 import styles from "./ParticleBackground.module.css";
 
 interface Particle {
@@ -12,7 +12,12 @@ interface Particle {
   opacity: number;
 }
 
-function ParticleBackground() {
+interface ParticleBackgroundProps {
+  className?: string;
+  style?: CSSProperties;
+}
+
+function ParticleBackground({ className, style }: ParticleBackgroundProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -102,7 +107,8 @@ function ParticleBackground() {
   return (
     <canvas
       ref={canvasRef}
-      className={styles.canvas}
+      className={`${styles.canvas} ${className || ""}`}
+      style={style}
     />
   );
 }

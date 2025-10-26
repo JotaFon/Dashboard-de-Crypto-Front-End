@@ -45,7 +45,7 @@
 }
 
 .particles {
-  top: -90%;
+  top: -40%;
   left: -75%;
 }
 
@@ -94,7 +94,6 @@
   }
 }
 
-/* Para telas muito pequenas */
 @media (max-width: 360px) {
   .container {
     padding: 16px;
